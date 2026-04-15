@@ -1,0 +1,90 @@
+.stats-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-box {
+  flex: 1;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+.stat-label {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.view-toggle button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: var(--card-bg);
+  color: var(--text-color);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.view-toggle button.active {
+  background: var(--accent-color);
+  color: white;
+}
+
+.carousel-placeholder {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.carousel-slide {
+  min-width: 100px;
+  height: 140px;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+
+.slide-day {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.slide-mood {
+  font-size: 40px;
+  margin-top: 8px;
+}
+
+.section-title {
+  font-size: 16px;
+  margin: 24px 0 12px;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 40px;
+  opacity: 0.7;
+}

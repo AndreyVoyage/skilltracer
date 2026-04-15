@@ -1,0 +1,114 @@
+# =============================================================================
+# Skill Tracer - Docker Compose Configuration
+# Оптимизировано для Reg.ru Host-0 (13GB диска)
+# =============================================================================
+
+
+
+services:
+  # ===========================================================================
+  # MySQL 8.0 Database
+  # Критично для Host-0: ограничение памяти 512MB
+  # ===========================================================================
+  mysql:
+    image: mysql:8.0
+    container_name: skilltracer_mysql
+    restart: always
+    # Порт 3306 только для внутренней сети (не выставляется наружу!)
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: skilltracer
+      MYSQL_USER: ${MYSQL_USER:-skilluser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-skillpass}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    # Лимиты ресурсов для Host-0
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - skilltracer_network
+
+  # ===========================================================================
+  # FastAPI Backend
+  # ===========================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: skilltracer_backend
+    restart: always
+    # Порт 8000 только внутренний (проксируется через Caddy)
+    expose:
+      - "8000"
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - DATABASE_URL=${DATABASE_URL:-mysql+aiomysql://skilluser:skillpass@mysql:3306/skilltracer}
+      - WEBAPP_URL=${WEBAPP_URL:-http://localhost}
+      - SECRET_KEY=${SECRET_KEY:-dev-secret-key}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+    volumes:
+      # Том для логов (ограниченный размер через log rotation в приложении)
+      - backend_logs:/app/logs
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - skilltracer_network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ===========================================================================
+  # Caddy Reverse Proxy
+  # Автоматический HTTPS, меньше конфигурации чем Nginx
+  # ===========================================================================
+  caddy:
+    image: caddy:2-alpine
+    container_name: skilltracer_caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+    networks:
+      - skilltracer_network
+
+# =============================================================================
+# Volumes (персистентные данные)
+# =============================================================================
+volumes:
+  mysql_data:
+    driver: local
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local
+  backend_logs:
+    driver: local
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  skilltracer_network:
+    driver: bridge

@@ -1,0 +1,97 @@
+.entry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mood-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.mood-row button {
+  font-size: 28px;
+  background: transparent;
+  border: none;
+  opacity: 0.4;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.mood-row button.active {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.tracker-input {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tracker-input label {
+  font-weight: 500;
+}
+
+.rating {
+  display: flex;
+  gap: 6px;
+}
+
+.rating button {
+  flex: 1;
+  padding: 10px 0;
+  background: rgba(128,128,128,0.15);
+  border: none;
+  border-radius: 8px;
+  color: var(--text-color);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.rating button.active {
+  background: var(--accent-color);
+  color: white;
+}
+
+.comment-label {
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+textarea {
+  background: rgba(128,128,128,0.1);
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  color: var(--text-color);
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.save-btn, .cancel-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.save-btn {
+  background: var(--accent-color);
+  color: white;
+  font-weight: 600;
+}
+
+.cancel-btn {
+  background: rgba(128,128,128,0.2);
+  color: var(--text-color);
+}

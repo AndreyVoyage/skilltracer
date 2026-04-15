@@ -1,0 +1,67 @@
+# =============================================================================
+# Systemd Service for Skill Tracer on reg.ru Host-0
+# =============================================================================
+# 
+# Place this file in: /etc/systemd/system/skilltracer.service
+# Enable: sudo systemctl enable skilltracer
+# Start: sudo systemctl start skilltracer
+# Status: sudo systemctl status skilltracer
+# Logs: sudo journalctl -u skilltracer -f
+#
+# =============================================================================
+
+[Unit]
+Description=Skill Tracer FastAPI Application
+Documentation=https://github.com/yourusername/skilltracer
+After=network.target mysql.service
+Wants=mysql.service
+
+[Service]
+Type=simple
+User=u1893136
+Group=u1893136
+WorkingDirectory=/home/u1893136/skilltracer/backend
+
+# Environment
+Environment=PATH=/home/u1893136/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONPATH=/home/u1893136/skilltracer/backend
+Environment=PYTHONUNBUFFERED=1
+
+# Load environment variables from .env file
+EnvironmentFile=/home/u1893136/skilltracer/backend/.env
+
+# Start command
+# Note: Using 2 workers max for Host-0 (2GB RAM limit)
+ExecStart=/home/u1893136/.local/bin/uvicorn app.main:app \
+    --host 127.0.0.1 \
+    --port 8000 \
+    --workers 2 \
+    --loop uvloop \
+    --http h11 \
+    --proxy-headers \
+    --forwarded-allow-ips '*'
+
+# Restart policy
+Restart=always
+RestartSec=5
+StartLimitInterval=60s
+StartLimitBurst=3
+
+# Graceful shutdown
+TimeoutStopSec=30
+KillSignal=SIGTERM
+
+# Security (run as unprivileged user)
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/home/u1893136/skilltracer/backend/logs
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=skilltracer
+
+[Install]
+WantedBy=multi-user.target

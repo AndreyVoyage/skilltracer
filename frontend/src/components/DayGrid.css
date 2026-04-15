@@ -1,0 +1,38 @@
+.day-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.day-cell {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 12px 4px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s;
+}
+
+.day-cell:hover {
+  transform: translateY(-2px);
+}
+
+.day-name {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 6px;
+}
+
+.day-mood {
+  font-size: 28px;
+}
+
+.media-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 10px;
+}

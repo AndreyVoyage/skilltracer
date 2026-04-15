@@ -1,0 +1,36 @@
+.day-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.back-btn {
+  background: var(--card-bg);
+  border: none;
+  padding: 8px 12px;
+  border-radius: var(--border-radius);
+  color: var(--text-color);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.day-detail-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.day-media {
+  width: 100%;
+  border-radius: var(--border-radius);
+  margin-bottom: 16px;
+  max-height: 300px;
+  object-fit: cover;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}

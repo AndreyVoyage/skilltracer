@@ -1,0 +1,62 @@
+# =============================================================================
+# Caddy Configuration for Skill Tracer on reg.ru Host-0
+# =============================================================================
+# 
+# Place this file in: /etc/caddy/Caddyfile
+# Then reload: sudo systemctl reload caddy
+#
+# Features:
+# - Automatic HTTPS (Let's Encrypt)
+# - Reverse proxy to FastAPI (localhost:8000)
+# - Gzip compression
+# - Log rotation (10MB x 3 files)
+#
+# =============================================================================
+
+u1893136.isp.regruhosting.ru {
+    # Reverse proxy to FastAPI backend
+    reverse_proxy localhost:8000
+    
+    # Enable compression
+    encode gzip
+    
+    # Security headers
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options SAMEORIGIN
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+    
+    # Automatic HTTPS with Let's Encrypt
+    # tls internal  # Uncomment for self-signed (testing)
+    tls {
+        # Let's Encrypt will be used automatically
+        # No additional configuration needed!
+    }
+    
+    # Logging (rotated to prevent disk fill on 13GB Host-0)
+    log {
+        output file /var/log/caddy/skilltracer.log {
+            roll_size 10MB
+            roll_keep 3
+            roll_keep_for 720h  # 30 days
+        }
+        format json
+        level INFO
+    }
+    
+    # Handle static files (if needed for frontend)
+    # Uncomment when frontend is ready:
+    # handle_path /static/* {
+    #     root * /home/u1893136/skilltracer/frontend/dist
+    #     file_server
+    # }
+}
+
+# =============================================================================
+# Optional: Redirect www to non-www (if you have www subdomain)
+# =============================================================================
+# www.u1893136.isp.regruhosting.ru {
+#     redir https://u1893136.isp.regruhosting.ru{uri}
+# }

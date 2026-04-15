@@ -1,0 +1,43 @@
+.trackers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tracker-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.tracker-icon {
+  font-size: 20px;
+}
+
+.tracker-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.tracker-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  background: rgba(128, 128, 128, 0.2);
+  border-radius: 12px;
+}
+
+.add-tracker-btn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 2px dashed var(--accent-color);
+  color: var(--accent-color);
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 4px;
+}

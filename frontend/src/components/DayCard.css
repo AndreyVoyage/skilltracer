@@ -1,0 +1,56 @@
+.day-card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s;
+  position: relative;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.day-card:hover {
+  transform: translateY(-4px);
+}
+
+.day-card.filled {
+  border: 2px solid var(--accent-color);
+}
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.day-mood {
+  font-size: 28px;
+  text-align: center;
+  margin: 8px 0;
+}
+
+.day-trackers {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.tracker-dot {
+  font-size: 14px;
+  opacity: 0.3;
+}
+
+.tracker-dot.has-value {
+  opacity: 1;
+}
+
+.media-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 12px;
+}
