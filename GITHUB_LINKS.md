@@ -1,17 +1,24 @@
 # Raw ссылки для skilltracer
 **Репозиторий:** https://github.com/AndreyVoyage/skilltracer
 **Ветка:** master
-**Сгенерировано:** 2026-04-13
+**Сгенерировано:** 2026-04-15
 
 ## 📋 Config
 - [.env](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/.env)
 - [.env.example](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/.env.example)
 - [.gitignore](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/.gitignore)
+- [backend/.env](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/.env)
+- [backend/.pytest_cache/.gitignore](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/.pytest_cache/.gitignore)
+- [backend/.pytest_cache/README.md](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/.pytest_cache/README.md)
 - [backend/requirements.txt](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/requirements.txt)
 - [caddy/Caddyfile](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/caddy/Caddyfile)
 - [deploy/caddy/Caddyfile](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/deploy/caddy/Caddyfile)
 - [docker-compose.yml](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/docker-compose.yml)
+- [frontend/.gitignore](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/.gitignore)
+- [frontend/package-lock.json](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/package-lock.json)
 - [frontend/package.json](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/package.json)
+- [frontend/README.md](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/README.md)
+- [frontend/tsconfig.json](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/tsconfig.json)
 - [frontend/vite.config.ts](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/vite.config.ts)
 - [package-lock.json](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/package-lock.json)
 - [package.json](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/package.json)
@@ -20,7 +27,8 @@
 ## ⚙️ Backend
 - [backend/alembic/__init__.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/alembic/__init__.py)
 - [backend/alembic/env.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/alembic/env.py)
-- [backend/alembic/versions/001_initial.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/alembic/versions/001_initial.py)
+- [backend/alembic/versions/b6178ccac1e2_add_report_links_and_entry_fields.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/alembic/versions/b6178ccac1e2_add_report_links_and_entry_fields.py)
+- [backend/alembic/versions/dba0736e5893_initial_postgres.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/alembic/versions/dba0736e5893_initial_postgres.py)
 - [backend/app/__init__.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/__init__.py)
 - [backend/app/api/__init__.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/api/__init__.py)
 - [backend/app/api/deps.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/api/deps.py)
@@ -29,15 +37,21 @@
 - [backend/app/api/v1/endpoints/__init__.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/api/v1/endpoints/__init__.py)
 - [backend/app/api/v1/endpoints/entries.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/api/v1/endpoints/entries.py)
 - [backend/app/api/v1/endpoints/groups.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/api/v1/endpoints/groups.py)
+- [backend/app/api/v1/endpoints/media.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/api/v1/endpoints/media.py)
 - [backend/app/api/v1/endpoints/reports.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/api/v1/endpoints/reports.py)
 - [backend/app/api/v1/endpoints/trackers.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/api/v1/endpoints/trackers.py)
 - [backend/app/api/v1/endpoints/users.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/api/v1/endpoints/users.py)
 - [backend/app/bot/__init__.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/__init__.py)
 - [backend/app/bot/config.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/config.py)
 - [backend/app/bot/handlers/__init__.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/__init__.py)
+- [backend/app/bot/handlers/callbacks.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/callbacks.py)
+- [backend/app/bot/handlers/collection.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/collection.py)
 - [backend/app/bot/handlers/commands.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/commands.py)
 - [backend/app/bot/handlers/photos.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/photos.py)
+- [backend/app/bot/handlers/skills.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/skills.py)
+- [backend/app/bot/handlers/webapp_data.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/webapp_data.py)
 - [backend/app/bot/keyboards.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/keyboards.py)
+- [backend/app/bot/media_cache.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/media_cache.py)
 - [backend/app/bot/middlewares.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/middlewares.py)
 - [backend/app/bot/notifications.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/notifications.py)
 - [backend/app/config.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/config.py)
@@ -47,12 +61,20 @@
 - [backend/app/models/base.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/models/base.py)
 - [backend/app/models/entry.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/models/entry.py)
 - [backend/app/models/group.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/models/group.py)
+- [backend/app/models/report_link.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/models/report_link.py)
 - [backend/app/models/report.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/models/report.py)
+- [backend/app/models/telegram_queue.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/models/telegram_queue.py)
 - [backend/app/models/tracker.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/models/tracker.py)
 - [backend/app/models/user.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/models/user.py)
+- [backend/app/services/__init__.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/services/__init__.py)
+- [backend/app/services/report_generator.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/services/report_generator.py)
 - [backend/config/database.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/config/database.py)
 - [backend/cron/process_updates.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/cron/process_updates.py)
+- [backend/scripts/test_report.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/scripts/test_report.py)
+- [backend/scripts/verify_system.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/scripts/verify_system.py)
+- [backend/test_proxy.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/test_proxy.py)
 - [backend/tests/__init__.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/tests/__init__.py)
+- [backend/tests/conftest.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/tests/conftest.py)
 - [backend/tests/test_api/__init__.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/tests/test_api/__init__.py)
 - [backend/tests/test_api/conftest.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/tests/test_api/conftest.py)
 - [backend/tests/test_api/test_auth.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/tests/test_api/test_auth.py)
@@ -62,15 +84,44 @@
 - [backend/tests/test_bot.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/tests/test_bot.py)
 - [backend/tests/test_database.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/tests/test_database.py)
 - [backend/tests/test_models.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/tests/test_models.py)
+- [backend/tests/test_report_generator.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/tests/test_report_generator.py)
 - [create_context.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/create_context.py)
+- [frontend/src/api/client.ts](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/api/client.ts)
 - [scripts/healthcheck.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/scripts/healthcheck.py)
 - [scripts/verify_bot.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/scripts/verify_bot.py)
 - [test_bot.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/test_bot.py)
 - [test_db_connection.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/test_db_connection.py)
 
 ## 🎨 Frontend
+- [assets/index-BQiKLOiX.js](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/assets/index-BQiKLOiX.js)
+- [assets/index-CfnBks9c.css](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/assets/index-CfnBks9c.css)
 - [bot.js](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/bot.js)
+- [frontend/eslint.config.js](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/eslint.config.js)
+- [frontend/src/App.css](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/App.css)
+- [frontend/src/App.tsx](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/App.tsx)
+- [frontend/src/components/DayCard.css](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/components/DayCard.css)
+- [frontend/src/components/DayCard.tsx](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/components/DayCard.tsx)
+- [frontend/src/components/DayGrid.css](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/components/DayGrid.css)
+- [frontend/src/components/DayGrid.tsx](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/components/DayGrid.tsx)
+- [frontend/src/components/EntryForm.css](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/components/EntryForm.css)
+- [frontend/src/components/EntryForm.tsx](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/components/EntryForm.tsx)
+- [frontend/src/components/Layout.css](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/components/Layout.css)
+- [frontend/src/components/Layout.tsx](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/components/Layout.tsx)
+- [frontend/src/components/ThemeToggle.css](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/components/ThemeToggle.css)
+- [frontend/src/components/ThemeToggle.tsx](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/components/ThemeToggle.tsx)
+- [frontend/src/components/TrackersList.css](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/components/TrackersList.css)
+- [frontend/src/components/TrackersList.tsx](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/components/TrackersList.tsx)
+- [frontend/src/hooks/useEntries.ts](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/hooks/useEntries.ts)
+- [frontend/src/hooks/useTelegram.ts](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/hooks/useTelegram.ts)
+- [frontend/src/hooks/useTheme.ts](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/hooks/useTheme.ts)
+- [frontend/src/index.css](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/index.css)
 - [frontend/src/main.tsx](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/main.tsx)
+- [frontend/src/pages/DayDetail.css](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/pages/DayDetail.css)
+- [frontend/src/pages/DayDetail.tsx](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/pages/DayDetail.tsx)
+- [frontend/src/pages/Home.css](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/pages/Home.css)
+- [frontend/src/pages/Home.tsx](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/pages/Home.tsx)
+- [frontend/src/pages/PublicReport.css](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/pages/PublicReport.css)
+- [frontend/src/pages/PublicReport.tsx](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/pages/PublicReport.tsx)
 
 ## 🗄️ Database
 - [backend/alembic/script.py.mako](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/alembic/script.py.mako)
@@ -79,17 +130,28 @@
 - [hosting/database.sql](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/hosting/database.sql)
 
 ## 🔴 Binary
+- backend/test_report.jpg — [скачать](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/test_report.jpg) *(бинарный файл)*
+- favicon.svg — [скачать](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/favicon.svg) *(бинарный файл)*
+- frontend/public/favicon.svg — [скачать](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/public/favicon.svg) *(бинарный файл)*
+- frontend/public/icons.svg — [скачать](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/public/icons.svg) *(бинарный файл)*
+- frontend/src/assets/hero.png — [скачать](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/assets/hero.png) *(бинарный файл)*
+- frontend/src/assets/react.svg — [скачать](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/assets/react.svg) *(бинарный файл)*
+- frontend/src/assets/vite.svg — [скачать](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/src/assets/vite.svg) *(бинарный файл)*
+- icons.svg — [скачать](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/icons.svg) *(бинарный файл)*
 - skilltracer.zip — [скачать](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/skilltracer.zip) *(бинарный файл)*
 
 ## 📁 Other
-- [ПРОЕКТ.MD](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/%D0%9F%D0%A0%D0%9E%D0%95%D0%9A%D0%A2.MD)
 - [api/entries.php](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/api/entries.php)
 - [api/groups.php](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/api/groups.php)
 - [api/me.php](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/api/me.php)
 - [api/weeks.php](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/api/weeks.php)
 - [backend/.env.production](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/.env.production)
+- [backend/.pytest_cache/CACHEDIR.TAG](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/.pytest_cache/CACHEDIR.TAG)
+- [backend/.pytest_cache/v/cache/lastfailed](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/.pytest_cache/v/cache/lastfailed)
+- [backend/.pytest_cache/v/cache/nodeids](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/.pytest_cache/v/cache/nodeids)
 - [backend/alembic.ini](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/alembic.ini)
 - [backend/Dockerfile](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/Dockerfile)
+- [backend/test.db](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/test.db)
 - [caddy/install-caddy.sh](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/caddy/install-caddy.sh)
 - [check_webhook.php](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/check_webhook.php)
 - [config/database.php](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/config/database.php)
@@ -100,12 +162,17 @@
 - [FIX_README.md](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/FIX_README.md)
 - [fix_structure.php](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/fix_structure.php)
 - [frontend/index.html](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/index.html)
+- [frontend/tsconfig.app.json](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/tsconfig.app.json)
+- [frontend/tsconfig.node.json](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/frontend/tsconfig.node.json)
 - [generate-github-links.mjs](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/generate-github-links.mjs)
 - [GITHUB_LINKS.md](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/GITHUB_LINKS.md)
 - [health_check.php](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/health_check.php)
+- [index.html](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/index.html)
 - [install.sh](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/install.sh)
 - [INSTRUCTION_CRON.md](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/INSTRUCTION_CRON.md)
 - [INSTRUCTION_IMPORT.md](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/INSTRUCTION_IMPORT.md)
+- [logs/backend_error.log](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/logs/backend_error.log)
+- [logs/backend.log](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/logs/backend.log)
 - [README_NATIVE.md](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/README_NATIVE.md)
 - [scripts/backup.sh](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/scripts/backup.sh)
 - [scripts/migrate.sh](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/scripts/migrate.sh)
@@ -123,6 +190,11 @@
 - [uninstall.sh](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/uninstall.sh)
 - [verify_tables.php](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/verify_tables.php)
 - [webhook.php](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/webhook.php)
+- [ПРОЕКТ.MD](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/%D0%9F%D0%A0%D0%9E%D0%95%D0%9A%D0%A2.MD)
 
 ## ⚠️ Предупреждения
+- `assets/index-BQiKLOiX.js` > 100KB, может долго грузиться
+- `backend/test.db` > 100KB, может долго грузиться
+- `frontend/package-lock.json` > 100KB, может долго грузиться
+- Файл `skilltracer.zip` > 10MB — слишком большой для raw
 - `ПРОЕКТ.MD` > 100KB, может долго грузиться
