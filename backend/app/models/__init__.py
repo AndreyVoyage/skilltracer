@@ -15,6 +15,7 @@ from app.models.report import WeekReport, Comment, ReportStatus
 from app.models.report_link import ReportLink
 from app.models.group import Group, GroupMember, GroupRole
 from app.models.telegram_queue import TelegramQueue
+from app.models.journal_entry import JournalEntry
 
 __all__ = [
     # Base
@@ -32,6 +33,7 @@ __all__ = [
     "GroupMember",
     "TelegramQueue",
     "ReportLink",
+    "JournalEntry",
     # Enums
     "ReportStatus",
     "GroupRole",

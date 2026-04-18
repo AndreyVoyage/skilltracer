@@ -130,9 +130,15 @@ app = FastAPI(
 
 # CORS Middleware
 # ВНИМАНИЕ: Для production ограничить origins!
+_cors_origins = ["*"] if settings.is_development else [
+    settings.WEBAPP_URL,
+    "https://web.telegram.org",
+    "https://*.telegram.org",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"] if settings.is_development else [settings.WEBAPP_URL],
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

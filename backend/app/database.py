@@ -125,3 +125,93 @@ async def close_db() -> None:
     logger.info("Закрытие соединений с БД...")
     await async_engine.dispose()
     logger.info("✅ Соединения с БД закрыты")
+
+
+# =============================================================================
+# Journal Entry CRUD (для бота)
+# =============================================================================
+
+from datetime import date
+from typing import Optional
+
+from sqlalchemy import select
+
+from app.models.journal_entry import JournalEntry
+
+
+async def get_journal_entry(
+    db: AsyncSession,
+    user_id: int,
+    entry_date: date,
+) -> Optional[JournalEntry]:
+    """Получает запись пользователя за конкретную дату."""
+    result = await db.execute(
+        select(JournalEntry).where(
+            JournalEntry.user_id == user_id,
+            JournalEntry.entry_date == entry_date,
+        )
+    )
+    return result.scalar_one_or_none()
+
+
+async def get_journal_entries_dates(
+    db: AsyncSession,
+    user_id: int,
+    start_date: date,
+    end_date: date,
+) -> list[date]:
+    """Возвращает список дат, на которые есть записи за период."""
+    result = await db.execute(
+        select(JournalEntry.entry_date).where(
+            JournalEntry.user_id == user_id,
+            JournalEntry.entry_date >= start_date,
+            JournalEntry.entry_date <= end_date,
+        )
+    )
+    return [row[0] for row in result.all()]
+
+
+async def save_journal_entry(
+    db: AsyncSession,
+    user_id: int,
+    entry_date: date,
+    health_score: Optional[int] = None,
+    sport_score: Optional[int] = None,
+    study_score: Optional[int] = None,
+    rest_score: Optional[int] = None,
+    comment: Optional[str] = None,
+    media_urls: Optional[list] = None,
+) -> JournalEntry:
+    """Создаёт или обновляет запись дня (upsert)."""
+    entry = await get_journal_entry(db, user_id, entry_date)
+    
+    if entry is None:
+        entry = JournalEntry(
+            user_id=user_id,
+            entry_date=entry_date,
+            health_score=health_score,
+            sport_score=sport_score,
+            study_score=study_score,
+            rest_score=rest_score,
+            comment=comment,
+            media_urls=media_urls or [],
+        )
+        db.add(entry)
+    else:
+        if health_score is not None:
+            entry.health_score = health_score
+        if sport_score is not None:
+            entry.sport_score = sport_score
+        if study_score is not None:
+            entry.study_score = study_score
+        if rest_score is not None:
+            entry.rest_score = rest_score
+        if comment is not None:
+            entry.comment = comment
+        if media_urls is not None:
+            entry.media_urls = media_urls
+    
+    await db.flush()
+    await db.commit()
+    await db.refresh(entry)
+    return entry

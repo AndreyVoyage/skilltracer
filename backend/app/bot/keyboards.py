@@ -4,6 +4,8 @@ Bot Keyboards
 Все клавиатуры для бота: Reply и Inline.
 """
 
+from datetime import date, timedelta
+
 from aiogram.types import (
     ReplyKeyboardMarkup,
     KeyboardButton,
@@ -30,27 +32,24 @@ def get_main_menu_keyboard() -> ReplyKeyboardMarkup:
     """
     builder = ReplyKeyboardBuilder()
     
-    # WebApp кнопка (главная)
+    # Первый ряд
+    builder.row(
+        KeyboardButton(text=BotButtons.MY_WEEK),
+        KeyboardButton(text=BotButtons.SETTINGS),
+    )
+    
+    # Второй ряд
     builder.row(
         KeyboardButton(
             text=BotButtons.OPEN_APP,
             web_app=WebAppInfo(url=settings.WEBAPP_URL),
-        )
-    )
-    
-    # Второй ряд с дополнительными кнопками
-    builder.row(
-        KeyboardButton(text=BotButtons.WEEK_STATUS),
-        KeyboardButton(text=BotButtons.SETTINGS),
-    )
-    
-    # Третий ряд
-    builder.row(
+        ),
         KeyboardButton(text=BotButtons.HELP),
     )
     
     return builder.as_markup(
         resize_keyboard=True,
+        one_time_keyboard=False,
         is_persistent=True,
     )
 
@@ -66,9 +65,103 @@ def get_back_keyboard() -> ReplyKeyboardMarkup:
     )
 
 
+DAYS_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"]
+MONTHS_SHORT = {
+    1: "янв", 2: "фев", 3: "мар", 4: "апр", 5: "май", 6: "июн",
+    7: "июл", 8: "авг", 9: "сен", 10: "окт", 11: "ноя", 12: "дек",
+}
+
+
+def generate_day_labels() -> dict[str, date]:
+    """Генерирует метки дней для Reply-клавиатуры."""
+    today = date.today()
+    labels = {}
+    for i in range(9, -1, -1):
+        d = today - timedelta(days=i)
+        label = f"{DAYS_SHORT[d.weekday()]}, {d.day} {MONTHS_SHORT[d.month]}"
+        labels[label] = d
+    return labels
+
+
+def get_days_keyboard(filled_dates: set | None = None) -> ReplyKeyboardMarkup:
+    """
+    Reply-клавиатура с 10 последними датами + Назад.
+    Формат: 'Пн, 14 апр' или '✅ Пн, 14 апр' если заполнено.
+    """
+    if filled_dates is None:
+        filled_dates = set()
+    
+    builder = ReplyKeyboardBuilder()
+    
+    for label, d in generate_day_labels().items():
+        display = f"✅ {label}" if d in filled_dates else label
+        builder.row(KeyboardButton(text=display))
+    
+    builder.row(KeyboardButton(text=BotButtons.BACK_TO_MENU))
+    
+    return builder.as_markup(
+        resize_keyboard=True,
+        one_time_keyboard=False,
+    )
+
+
+def get_help_back_keyboard() -> ReplyKeyboardMarkup:
+    """Reply-клавиатура для справки с кнопкой назад."""
+    builder = ReplyKeyboardBuilder()
+    builder.row(KeyboardButton(text=BotButtons.BACK_TO_MENU))
+    return builder.as_markup(resize_keyboard=True, one_time_keyboard=False)
+
+
 # =============================================================================
 # Inline Keyboards (кнопки под сообщениями)
 # =============================================================================
+
+def get_entry_rating_keyboard(scores: dict | None = None) -> InlineKeyboardMarkup:
+    """
+    Inline-клавиатура для оценки 4 категорий.
+    
+    Args:
+        scores: dict вида {'health': 4, 'sport': 3, ...}
+    """
+    if scores is None:
+        scores = {}
+    
+    builder = InlineKeyboardBuilder()
+    categories = [
+        ("Здоровье", "health"),
+        ("Спорт", "sport"),
+        ("Учёба", "study"),
+        ("Отдых", "rest"),
+    ]
+    
+    for name, key in categories:
+        row = []
+        current = scores.get(key)
+        for val in range(1, 6):
+            text_btn = f"{val}" if current != val else f"[{val}]"
+            row.append(
+                InlineKeyboardButton(
+                    text=text_btn,
+                    callback_data=f"rate_{key}_{val}",
+                )
+            )
+        # Первая кнопка — название категории (без callback, просто текст)
+        row.insert(0, InlineKeyboardButton(text=name, callback_data="noop"))
+        builder.row(*row)
+    
+    builder.row(
+        InlineKeyboardButton(text="📝 Текст", callback_data="entry:text"),
+        InlineKeyboardButton(text="📎 Медиа", callback_data="entry:media"),
+    )
+    builder.row(
+        InlineKeyboardButton(text=BotButtons.SAVE_ENTRY, callback_data="save_entry"),
+    )
+    builder.row(
+        InlineKeyboardButton(text=BotButtons.BACK_TO_DAYS, callback_data="back_to_days"),
+    )
+    
+    return builder.as_markup()
+
 
 def get_week_status_keyboard(filled_days: int = 0) -> InlineKeyboardMarkup:
     """
@@ -101,8 +194,35 @@ def get_week_status_keyboard(filled_days: int = 0) -> InlineKeyboardMarkup:
     return builder.as_markup()
 
 
+def get_back_to_scores_keyboard(scores: dict | None = None) -> InlineKeyboardMarkup:
+    """Inline-клавиатура с кнопкой возврата к оценкам."""
+    builder = InlineKeyboardBuilder()
+    builder.row(
+        InlineKeyboardButton(text="⬅️ Назад к оценкам", callback_data="entry:back_to_scores"),
+    )
+    return builder.as_markup()
+
+
+def get_settings_inline_keyboard() -> InlineKeyboardMarkup:
+    """Inline-клавиатура настроек бота."""
+    builder = InlineKeyboardBuilder()
+    
+    builder.row(
+        InlineKeyboardButton(text="👤 Изменить имя", callback_data="settings:change_name"),
+        InlineKeyboardButton(text="📧 Изменить email", callback_data="settings:change_email"),
+    )
+    builder.row(
+        InlineKeyboardButton(text="🔔 Уведомления: Вкл/Выкл", callback_data="settings:toggle_notifications"),
+    )
+    builder.row(
+        InlineKeyboardButton(text=BotButtons.BACK_TO_MENU, callback_data="settings:back_to_menu"),
+    )
+    
+    return builder.as_markup()
+
+
 def get_settings_keyboard() -> InlineKeyboardMarkup:
-    """Клавиатура настроек."""
+    """Клавиатура настроек (legacy)."""
     builder = InlineKeyboardBuilder()
     
     builder.row(

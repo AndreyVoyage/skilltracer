@@ -5,6 +5,7 @@ Collection Handlers
 фото, текст, голосовые сообщения.
 """
 
+import logging
 from datetime import date
 
 from aiogram import Router, F
@@ -12,8 +13,19 @@ from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from sqlalchemy import select
 
 from app.models import DailyEntry
+from app.bot.config import BotButtons
 
+logger = logging.getLogger(__name__)
 router = Router(name="collection")
+
+EXCLUDED_BUTTONS = {
+    BotButtons.MY_WEEK,
+    BotButtons.SETTINGS,
+    BotButtons.HELP,
+    BotButtons.BACK_TO_MENU,
+    BotButtons.BACK_TO_DAYS,
+    BotButtons.OPEN_APP,
+}
 
 
 # =============================================================================
@@ -103,11 +115,13 @@ async def handle_voice(message: Message, db) -> None:
 # Text Handler
 # =============================================================================
 
-@router.message(F.text)
+@router.message(F.text, ~F.text.in_(EXCLUDED_BUTTONS))
 async def handle_text(message: Message, db) -> None:
     """Сохранение текстовой заметки."""
     if message.text and message.text.startswith("/"):
         return  # Команды обрабатываются в другом роутере
+    
+    logger.info(f"COLLECTION: Получен текст '{message.text}' от {message.from_user.id}")
     
     user_id = message.from_user.id
     today = date.today()

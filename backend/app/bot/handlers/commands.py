@@ -10,16 +10,18 @@ from datetime import date, timedelta
 from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
+from aiogram.fsm.context import FSMContext
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import User, DailyEntry, CustomTracker
-from app.bot.config import BotMessages, BotConfig
+from app.bot.config import BotMessages, BotConfig, BotButtons
 from app.bot.keyboards import (
     get_main_menu_keyboard,
     get_week_status_keyboard,
     get_settings_keyboard,
     build_progress_bar,
+    get_help_back_keyboard,
 )
 
 logger = logging.getLogger(__name__)
@@ -168,26 +170,27 @@ async def cmd_settings(message: Message, db: AsyncSession, user: User) -> None:
 # Text Button Handlers
 # =============================================================================
 
-@router.message(F.text == BotMessages.HELP)
-async def btn_help(message: Message, user: User) -> None:
+@router.message(F.text == BotButtons.HELP)
+async def btn_help(message: Message) -> None:
     """Обработчик кнопки Помощь."""
-    await cmd_help(message, user)
+    await message.answer(
+        BotMessages.HELP_MENU_TEXT,
+        reply_markup=get_help_back_keyboard(),
+    )
 
 
-@router.message(F.text == BotMessages.WEEK_STATUS)
-async def btn_week(message: Message, db: AsyncSession, user: User) -> None:
-    """Обработчик кнопки Моя неделя."""
-    await cmd_week(message, db, user)
-
-
-@router.message(F.text == BotMessages.SETTINGS)
-async def btn_settings(message: Message, db: AsyncSession, user: User) -> None:
-    """Обработчик кнопки Настройки."""
-    await cmd_settings(message, db, user)
+@router.message(F.text == BotButtons.BACK_TO_MENU)
+async def btn_back_to_menu(message: Message, state: FSMContext) -> None:
+    """Обработчик кнопки Назад в меню."""
+    await state.clear()
+    await message.answer(
+        "Главное меню",
+        reply_markup=get_main_menu_keyboard(),
+    )
 
 
 # =============================================================================
-# Callback Handlers
+# Callback Handlers (legacy settings)
 # =============================================================================
 
 @router.callback_query(F.data == "view_stats")
@@ -197,9 +200,9 @@ async def cb_view_stats(callback: CallbackQuery, db: AsyncSession, user: User) -
     # TODO: Реализовать детальную статистику
 
 
-@router.callback_query(F.data.startswith("settings:"))
+@router.callback_query(F.data.in_({"settings:timezone", "settings:reminder", "settings:trackers"}))
 async def cb_settings(callback: CallbackQuery) -> None:
-    """Обработчик кнопок настроек."""
+    """Обработчик legacy кнопок настроек."""
     action = callback.data.split(":")[1]
     
     if action == "timezone":
@@ -263,13 +266,6 @@ async def cb_set_reminder(callback: CallbackQuery, db: AsyncSession, user: User)
 # =============================================================================
 # Error Handler
 # =============================================================================
-
-@router.callback_query()
-async def cb_fallback(callback: CallbackQuery) -> None:
-    """Обработчик неизвестных inline кнопок."""
-    logger.info(f"Unhandled callback: {callback.data}")
-    await callback.answer("🛠️ Эта функция в разработке")
-
 
 @router.errors()
 async def handle_errors(event, db: AsyncSession = None) -> None:

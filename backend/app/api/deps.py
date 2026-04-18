@@ -11,13 +11,13 @@ import time
 import logging
 from typing import Optional
 
-from fastapi import Depends, HTTPException, status, Header
+from fastapi import Depends, HTTPException, status, Header, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.database import AsyncSessionLocal
-from app.models import User, Group, GroupMember
+from app.models import User, Group, GroupMember, CustomTracker
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -102,7 +102,7 @@ def validate_telegram_init_data(init_data: str) -> dict:
         return user_data
         
     except Exception as e:
-        logger.warning(f"Init data validation failed: {e}")
+        logger.warning(f"Init data validation failed: {e}. Init data length: {len(init_data) if init_data else 0}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired init data",
@@ -121,6 +121,8 @@ async def get_current_user(
     Получает текущего пользователя из initData.
     Создает пользователя если не существует.
     """
+    logger.info(f"get_current_user called. init_data present: {bool(init_data)}, length: {len(init_data) if init_data else 0}")
+    
     if not init_data:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -146,7 +148,24 @@ async def get_current_user(
         )
         db.add(user)
         await db.flush()
-        logger.info(f"Created user from Mini App: {user.id}")
+        
+        # Создаем 4 базовых трекера
+        default_trackers = [
+            {"name": "Здоровье", "icon": "❤️", "sort_order": 1},
+            {"name": "Спорт", "icon": "🏃", "sort_order": 2},
+            {"name": "Учёба", "icon": "📚", "sort_order": 3},
+            {"name": "Отдых", "icon": "🧘", "sort_order": 4},
+        ]
+        for tracker_data in default_trackers:
+            tracker = CustomTracker(
+                user_id=user.id,
+                is_default=True,
+                **tracker_data
+            )
+            db.add(tracker)
+        await db.flush()
+        
+        logger.info(f"Created user from Mini App with default trackers: {user.id}")
     else:
         # Обновляем данные
         if user.username != tg_user.get('username'):
@@ -187,6 +206,40 @@ async def get_current_group(
 # =============================================================================
 # Optional Auth (для некоторых endpoints)
 # =============================================================================
+
+async def get_current_user_or_query(
+    request: Request,
+    init_data: Optional[str] = Header(None, alias="X-Init-Data"),
+    db: AsyncSession = Depends(get_db),
+) -> User:
+    """
+    Получает пользователя из initData или fallback на user_id в query params.
+    Временное решение для WebApp до исправления initData.
+    """
+    if init_data:
+        try:
+            return await get_current_user(init_data, db)
+        except HTTPException:
+            logger.warning("InitData auth failed, trying query fallback")
+    
+    # Fallback: user_id из query params
+    user_id_str = request.query_params.get("user_id")
+    if user_id_str:
+        try:
+            user_id = int(user_id_str)
+            result = await db.execute(select(User).where(User.id == user_id))
+            user = result.scalar_one_or_none()
+            if user:
+                logger.info(f"Auth fallback: user {user_id} from query params")
+                return user
+        except (ValueError, Exception) as e:
+            logger.warning(f"Query fallback failed: {e}")
+    
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Unauthorized: invalid initData or missing user_id",
+    )
+
 
 async def get_optional_user(
     init_data: Optional[str] = Header(None, alias="X-Init-Data"),

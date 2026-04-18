@@ -18,7 +18,7 @@ from aiogram.client.session.aiohttp import AiohttpSession
 from app.config import settings
 from app.bot.config import BotCommands
 from app.bot.middlewares import DatabaseMiddleware, UserMiddleware
-from app.bot.handlers import commands, photos, skills, webapp_data, callbacks, collection
+from app.bot.handlers import commands, journal, settings_menu, callbacks, photos, skills, webapp_data, collection
 
 logger = logging.getLogger(__name__)
 
@@ -63,13 +63,19 @@ dp = Dispatcher(storage=storage)
 
 def setup_handlers() -> None:
     """Регистрация всех хендлеров."""
-    # Команды
+    # Команды и Reply-кнопки
     dp.include_router(commands.router)
     
-    # Callback кнопки
+    # Журнал (Моя неделя + FSM)
+    dp.include_router(journal.router)
+    
+    # Настройки (inline)
+    dp.include_router(settings_menu.router)
+    
+    # Callback кнопки (legacy + новые inline)
     dp.include_router(callbacks.router)
     
-    # Сбор контента (фото, текст, голос)
+    # Сбор контента (фото, текст, голос) — должен быть ПОСЛЕ FSM-роутеров
     dp.include_router(collection.router)
     
     # Фото и медиа
@@ -101,12 +107,12 @@ async def set_bot_commands() -> None:
     """Устанавливает команды меню бота."""
     from aiogram.types import BotCommand
     
-    commands = [
+    commands_list = [
         BotCommand(command=cmd, description=desc)
         for cmd, desc in BotCommands.get_commands()
     ]
     
-    await bot.set_my_commands(commands)
+    await bot.set_my_commands(commands_list)
     logger.info("Bot commands set")
 
 
