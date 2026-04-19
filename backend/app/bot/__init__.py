@@ -18,7 +18,7 @@ from aiogram.client.session.aiohttp import AiohttpSession
 from app.config import settings
 from app.bot.config import BotCommands
 from app.bot.middlewares import DatabaseMiddleware, UserMiddleware
-from app.bot.handlers import commands, journal, settings_menu, callbacks, photos, skills, webapp_data, collection
+from app.bot.handlers import commands, journal, settings_menu, callbacks, skills, webapp_data, collection
 
 logger = logging.getLogger(__name__)
 
@@ -75,11 +75,8 @@ def setup_handlers() -> None:
     # Callback кнопки (legacy + новые inline)
     dp.include_router(callbacks.router)
     
-    # Сбор контента (фото, текст, голос) — должен быть ПОСЛЕ FSM-роутеров
+    # Сбор контента (фото, видео, голос, текст, документы) — должен быть ПОСЛЕ FSM-роутеров
     dp.include_router(collection.router)
-    
-    # Фото и медиа
-    dp.include_router(photos.router)
     
     # Conversation для трекеров
     dp.include_router(skills.router)

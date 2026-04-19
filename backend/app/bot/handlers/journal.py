@@ -219,23 +219,23 @@ async def entry_text_in_scores_state(message: Message, state: FSMContext) -> Non
 )
 async def entry_media_in_scores_state(message: Message, state: FSMContext) -> None:
     """Принимает медиа и автоматически возвращает к оценкам."""
-    file_id = None
+    media_item = None
     if message.photo:
-        file_id = message.photo[-1].file_id
+        media_item = {"type": "photo", "file_id": message.photo[-1].file_id}
     elif message.voice:
-        file_id = message.voice.file_id
+        media_item = {"type": "voice", "file_id": message.voice.file_id}
     elif message.video:
-        file_id = message.video.file_id
+        media_item = {"type": "video", "file_id": message.video.file_id}
     elif message.audio:
-        file_id = message.audio.file_id
+        media_item = {"type": "audio", "file_id": message.audio.file_id}
 
-    if not file_id:
+    if not media_item:
         await message.answer("Не удалось распознать медиа.")
         return
 
     data = await state.get_data()
     media = data.get("media", [])
-    media.append(file_id)
+    media.append(media_item)
     await state.update_data(media=media)
     await _return_to_ratings(message, state, "📎 Медиа сохранено.")
 

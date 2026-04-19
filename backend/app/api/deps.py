@@ -214,7 +214,7 @@ async def get_current_user_or_query(
 ) -> User:
     """
     Получает пользователя из initData или fallback на user_id в query params.
-    Временное решение для WebApp до исправления initData.
+    Fallback на user_id работает только в development!
     """
     if init_data:
         try:
@@ -223,6 +223,7 @@ async def get_current_user_or_query(
             logger.warning("InitData auth failed, trying query fallback")
     
     # Fallback: user_id из query params
+    # TODO: Убрать fallback в production после фикса initData в @BotFather
     user_id_str = request.query_params.get("user_id")
     if user_id_str:
         try:
@@ -230,14 +231,17 @@ async def get_current_user_or_query(
             result = await db.execute(select(User).where(User.id == user_id))
             user = result.scalar_one_or_none()
             if user:
-                logger.info(f"Auth fallback: user {user_id} from query params")
+                if settings.is_development:
+                    logger.info(f"Auth fallback: user {user_id} from query params (dev)")
+                else:
+                    logger.warning(f"⚠️ PRODUCTION fallback used: user {user_id} from query params")
                 return user
         except (ValueError, Exception) as e:
             logger.warning(f"Query fallback failed: {e}")
     
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Unauthorized: invalid initData or missing user_id",
+        detail="Unauthorized: invalid or missing initData",
     )
 
 

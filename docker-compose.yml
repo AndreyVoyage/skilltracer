@@ -3,27 +3,24 @@
 # Оптимизировано для Reg.ru Host-0 (13GB диска)
 # =============================================================================
 
-
-
 services:
   # ===========================================================================
-  # MySQL 8.0 Database
+  # PostgreSQL 15 Database
   # Критично для Host-0: ограничение памяти 512MB
   # ===========================================================================
-  mysql:
-    image: mysql:8.0
-    container_name: skilltracer_mysql
+  postgres:
+    image: postgres:15-alpine
+    container_name: skilltracer_postgres
     restart: always
-    # Порт 3306 только для внутренней сети (не выставляется наружу!)
+    # Порт 5432 только для внутренней сети (не выставляется наружу!)
     expose:
-      - "3306"
+      - "5432"
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
-      MYSQL_DATABASE: skilltracer
-      MYSQL_USER: ${MYSQL_USER:-skilluser}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-skillpass}
+      POSTGRES_USER: ${POSTGRES_USER:-skilluser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-skillpass}
+      POSTGRES_DB: skilltracer
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     # Лимиты ресурсов для Host-0
     deploy:
       resources:
@@ -31,7 +28,7 @@ services:
           memory: 512M
           cpus: '0.5'
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -53,15 +50,16 @@ services:
       - "8000"
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
-      - DATABASE_URL=${DATABASE_URL:-mysql+aiomysql://skilluser:skillpass@mysql:3306/skilltracer}
+      - DATABASE_URL=${DATABASE_URL:-postgresql+asyncpg://skilluser:skillpass@postgres:5432/skilltracer}
       - WEBAPP_URL=${WEBAPP_URL:-http://localhost}
       - SECRET_KEY=${SECRET_KEY:-dev-secret-key}
       - ENVIRONMENT=${ENVIRONMENT:-development}
+      - TELEGRAM_PROXY=${TELEGRAM_PROXY}
     volumes:
       # Том для логов (ограниченный размер через log rotation в приложении)
       - backend_logs:/app/logs
     depends_on:
-      mysql:
+      postgres:
         condition: service_healthy
     networks:
       - skilltracer_network
@@ -97,7 +95,7 @@ services:
 # Volumes (персистентные данные)
 # =============================================================================
 volumes:
-  mysql_data:
+  postgres_data:
     driver: local
   caddy_data:
     driver: local

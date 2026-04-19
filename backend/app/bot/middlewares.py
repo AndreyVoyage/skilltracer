@@ -39,15 +39,19 @@ class DatabaseMiddleware(BaseMiddleware):
         data: Dict[str, Any],
     ) -> Any:
         """Создает сессию БД и передает в хендлер."""
+        event_type = type(event).__name__
+        user_id = getattr(getattr(event, 'from_user', None), 'id', 'unknown')
+        logger.info(f"[DB_MIDDLEWARE] {event_type} from user={user_id}")
         async with AsyncSessionLocal() as session:
             data["db"] = session
             try:
                 result = await handler(event, data)
                 await session.commit()
+                logger.info(f"[DB_MIDDLEWARE] Handler completed OK")
                 return result
             except Exception as e:
                 await session.rollback()
-                logger.error(f"Database error in handler: {e}")
+                logger.error(f"[DB_MIDDLEWARE] Database error in handler: {e}")
                 raise
             finally:
                 await session.close()

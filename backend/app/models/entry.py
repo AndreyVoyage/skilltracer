@@ -17,6 +17,7 @@ from sqlalchemy import (
     Date,
     ForeignKey,
     Integer,
+    JSON,
     String,
     Text,
     UniqueConstraint,
@@ -99,7 +100,16 @@ class DailyEntry(Base, TimestampMixin):
     video_file_id: Mapped[Optional[str]] = mapped_column(
         String(255),
         nullable=True,
-        comment="Telegram file_id видео сообщения",
+        comment="Telegram file_id видео сообщения (DEPRECATED: use media_files)",
+    )
+    
+    # Новый unified массив медиа (фото, видео, голос, аудио)
+    media_files: Mapped[list] = mapped_column(
+        JSON,
+        default=list,
+        server_default="[]",
+        nullable=False,
+        comment="Массив медиа [{id, type, file_id, caption, created_at}]",
     )
     
     has_media: Mapped[bool] = mapped_column(

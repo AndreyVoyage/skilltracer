@@ -107,3 +107,6 @@ DEPLOY_SUBDOMAIN.md
 TESTING.md
 FIX_README.md
 *.log
+logs/*.log
+*.db
+*.zip

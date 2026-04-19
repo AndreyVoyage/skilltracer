@@ -22,12 +22,41 @@ export const Home: React.FC = () => {
   }
 
   if (error || !data) {
+    const cachedId = localStorage.getItem('st_user_id');
+    const hasTelegram = !!(window as any).Telegram?.WebApp;
+
     return (
       <Layout>
-        <div className="error">Ошибка загрузки данных</div>
+        <div style={{ padding: '20px', textAlign: 'center' }}>
+          {!cachedId && !hasTelegram ? (
+            <>
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔐</div>
+              <h3 style={{ marginBottom: '8px' }}>Требуется авторизация</h3>
+              <p style={{ color: '#666', marginBottom: '20px' }}>
+                Telegram не передал данные автоматически.
+              </p>
+              <p style={{ margin: '20px 0', color: '#666', fontSize: '14px' }}>
+                Нажмите ❗ в правом верхнем углу и введите ваш Telegram ID
+              </p>
+              <p style={{ fontSize: '12px', color: '#999' }}>
+                Ваш ID можно узнать у бота{' '}
+                <a href="https://t.me/userinfobot" style={{ color: '#2481cc' }}>
+                  @userinfobot
+                </a>
+              </p>
+            </>
+          ) : (
+            <div className="error">Ошибка загрузки данных</div>
+          )}
+        </div>
       </Layout>
     );
   }
+
+  // eslint-disable-next-line no-console
+  console.log('[Home] trackers:', data.trackers);
+  // eslint-disable-next-line no-console
+  console.log('[Home] entries:', data.entries);
 
   const start = new Date(data.start_date);
   const days = Array.from({ length: 7 }, (_, i) => {

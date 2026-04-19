@@ -132,6 +132,7 @@ app = FastAPI(
 # ВНИМАНИЕ: Для production ограничить origins!
 _cors_origins = ["*"] if settings.is_development else [
     settings.WEBAPP_URL,
+    "https://skilltracer.art-artel.su",
     "https://web.telegram.org",
     "https://*.telegram.org",
 ]

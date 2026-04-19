@@ -6,7 +6,7 @@ CRUD для DailyEntry (приватных записей).
 
 import logging
 from datetime import date, timedelta
-from typing import List, Optional
+from typing import List, Optional, Any
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -48,13 +48,16 @@ class EntryOut(BaseModel):
     has_media: bool = False
     metrics: List[dict] = []
     
+    # Unified media array (DailyEntry.media_files + JournalEntry.media_urls)
+    media_files: List[Any] = []
+    
     # Поля из бота (JournalEntry)
     health_score: Optional[int] = None
     sport_score: Optional[int] = None
     study_score: Optional[int] = None
     rest_score: Optional[int] = None
     comment: Optional[str] = None
-    media_urls: List[str] = []
+    media_urls: List[Any] = []  # Deprecated: kept for compatibility
     
     class Config:
         from_attributes = True
@@ -238,6 +241,18 @@ async def get_week_entries(
         de = daily_entries.get(d)
         je = journal_entries.get(d)
         
+        # Merge media from DailyEntry and JournalEntry
+        merged_media = []
+        if de and de.media_files:
+            merged_media.extend(de.media_files)
+        if je and je.media_urls:
+            # Normalize JournalEntry media_urls (strings or objects)
+            for item in je.media_urls:
+                if isinstance(item, str):
+                    merged_media.append({"type": "photo", "file_id": item})
+                elif isinstance(item, dict):
+                    merged_media.append(item)
+        
         entry = EntryOut(
             id=de.id if de else (je.id if je else 0),
             entry_date=d,
@@ -248,6 +263,7 @@ async def get_week_entries(
             video_file_id=de.video_file_id if de else None,
             has_media=de.has_media if de else False,
             metrics=[{"tracker_id": m.tracker_id, "value": m.value} for m in de.metrics] if de else [],
+            media_files=merged_media,
             health_score=je.health_score if je else None,
             sport_score=je.sport_score if je else None,
             study_score=je.study_score if je else None,
