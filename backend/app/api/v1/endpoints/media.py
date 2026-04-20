@@ -155,9 +155,9 @@ async def add_media(
     return MediaItemOut(**media_item)
 
 
-@router.delete("/entries/{entry_date}/media/{media_id}")
+@router.delete("/entries/{entry_id}/media/{media_id}")
 async def delete_media(
-    entry_date: date,
+    entry_id: int,
     media_id: str,
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user_or_query),
@@ -165,8 +165,8 @@ async def delete_media(
     """Удаляет конкретное медиа по ID. Поддерживает legacy поля (photo/video/voice_file_id)."""
     result = await db.execute(
         select(DailyEntry).where(
+            DailyEntry.id == entry_id,
             DailyEntry.user_id == user.id,
-            DailyEntry.entry_date == entry_date,
         )
     )
     entry = result.scalar_one_or_none()
@@ -215,5 +215,6 @@ async def delete_media(
     if len(entry.media_files) == 0:
         entry.has_media = bool(entry.photo_file_id or entry.video_file_id or entry.voice_file_id)
 
+    flag_modified(entry, "media_files")
     await db.commit()
     return {"deleted": media_id, "remaining": len(entry.media_files)}

@@ -26,7 +26,7 @@ from app.bot.keyboards import (
     get_back_to_scores_keyboard,
     generate_day_labels,
 )
-from app.database import save_journal_entry, get_journal_entries_dates
+from app.database import save_journal_entry, get_journal_entries_dates, get_or_create_daily_entry
 from app.models import User
 
 logger = logging.getLogger(__name__)
@@ -268,6 +268,8 @@ async def save_entry_callback(
 
     try:
         logger.info(f"[JOURNAL_SAVE] Saving entry for {entry_date}, media_count={len(media)}, media_ids={[m.get('id') for m in media]}")
+        
+        # 1. Сохраняем оценки и комментарий в JournalEntry (БЕЗ медиа)
         await save_journal_entry(
             db=db,
             user_id=user_id,
@@ -277,8 +279,20 @@ async def save_entry_callback(
             study_score=scores.get("study"),
             rest_score=scores.get("rest"),
             comment=comment,
-            media_urls=media if media else None,
+            media_urls=None,  # Media теперь сохраняется в DailyEntry
         )
+        
+        # 2. Если есть медиа — сохраняем в DailyEntry
+        if media:
+            de = await get_or_create_daily_entry(db, user_id, entry_date)
+            current = de.media_files or []
+            for item in media:
+                current = current + [item]
+            de.media_files = current
+            de.has_media = True
+            await db.commit()
+            await db.refresh(de)
+            logger.info(f"[JOURNAL_SAVE] Saved {len(media)} media items to DailyEntry id={de.id}")
     except Exception as exc:
         logger.error(f"Failed to save journal entry: {exc}")
         await callback.answer(

@@ -39,41 +39,42 @@ export const DayDetail: React.FC = () => {
     }
   };
 
-  // Собираем все медиа для отображения
-  const entry = data?.entries.find((e) => e.entry_date === date);
+  // Находим entry с нормализацией формата даты
+  const entry = React.useMemo(() => {
+    if (!data?.entries || !date) return undefined;
+    const targetDate = date.split('T')[0];
+    return data.entries.find((e) => {
+      const entryDate = typeof e.entry_date === 'string' ? e.entry_date.split('T')[0] : String(e.entry_date);
+      return entryDate === targetDate;
+    });
+  }, [data, date]);
 
   const allMedia: MediaItem[] = React.useMemo(() => {
     const result: MediaItem[] = [];
+    const seenFileIds = new Set<string>();
 
     // Новый unified формат (media_files из DailyEntry + merged JournalEntry)
     if (entry?.media_files && entry.media_files.length > 0) {
-      result.push(...entry.media_files);
-    }
-
-    // Legacy поля как fallback (если media_files пуст, но есть legacy поля)
-    // Добавляем id с префиксом legacy- чтобы крестик удаления работал
-    if (result.length === 0) {
-      if (entry?.photo_file_id) {
-        result.push({ id: 'legacy-photo', type: 'photo', file_id: entry.photo_file_id });
-      }
-      if (entry?.video_file_id) {
-        result.push({ id: 'legacy-video', type: 'video', file_id: entry.video_file_id });
-      }
-      if (entry?.voice_file_id) {
-        result.push({ id: 'legacy-voice', type: 'voice', file_id: entry.voice_file_id });
-      }
-    }
-
-    // Deprecated media_urls (bot journal) — мержится в media_files на бэкенде,
-    // но оставляем как fallback
-    if (result.length === 0 && entry?.media_urls && entry.media_urls.length > 0) {
-      for (const item of entry.media_urls) {
-        if (typeof item === 'string') {
-          result.push({ type: 'photo', file_id: item });
-        } else if (item && typeof item === 'object') {
-          result.push(item as MediaItem);
+      for (const item of entry.media_files) {
+        if (item && item.file_id && !seenFileIds.has(item.file_id)) {
+          result.push(item);
+          seenFileIds.add(item.file_id);
         }
       }
+    }
+
+    // Legacy поля — добавляем всегда, если есть и ещё не в списке
+    if (entry?.photo_file_id && !seenFileIds.has(entry.photo_file_id)) {
+      result.push({ id: 'legacy-photo', type: 'photo', file_id: entry.photo_file_id });
+      seenFileIds.add(entry.photo_file_id);
+    }
+    if (entry?.video_file_id && !seenFileIds.has(entry.video_file_id)) {
+      result.push({ id: 'legacy-video', type: 'video', file_id: entry.video_file_id });
+      seenFileIds.add(entry.video_file_id);
+    }
+    if (entry?.voice_file_id && !seenFileIds.has(entry.voice_file_id)) {
+      result.push({ id: 'legacy-voice', type: 'voice', file_id: entry.voice_file_id });
+      seenFileIds.add(entry.voice_file_id);
     }
 
     return result;
@@ -110,7 +111,7 @@ export const DayDetail: React.FC = () => {
       {/* Media Gallery */}
       {allMedia.length > 0 && entry && (
         <MediaGallery
-          entryDate={date}
+          entryId={entry.id}
           mediaItems={allMedia}
           onDelete={refetch}
         />

@@ -136,6 +136,7 @@ from typing import Optional
 
 from sqlalchemy import select
 
+from app.models import DailyEntry
 from app.models.journal_entry import JournalEntry
 
 
@@ -169,6 +170,26 @@ async def get_journal_entries_dates(
         )
     )
     return [row[0] for row in result.all()]
+
+
+async def get_or_create_daily_entry(
+    db: AsyncSession,
+    user_id: int,
+    entry_date: date,
+) -> DailyEntry:
+    """Находит или создаёт DailyEntry для пользователя и даты."""
+    result = await db.execute(
+        select(DailyEntry).where(
+            DailyEntry.user_id == user_id,
+            DailyEntry.entry_date == entry_date,
+        )
+    )
+    entry = result.scalar_one_or_none()
+    if entry is None:
+        entry = DailyEntry(user_id=user_id, entry_date=entry_date)
+        db.add(entry)
+        await db.flush()
+    return entry
 
 
 async def save_journal_entry(
