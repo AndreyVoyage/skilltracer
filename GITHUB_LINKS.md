@@ -1,7 +1,7 @@
 # Raw ссылки для skilltracer
 **Репозиторий:** https://github.com/AndreyVoyage/skilltracer
 **Ветка:** master
-**Сгенерировано:** 2026-04-19
+**Сгенерировано:** 2026-04-20
 
 ## 📋 Config
 - [.env](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/.env)
@@ -49,7 +49,6 @@
 - [backend/app/bot/handlers/collection.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/collection.py)
 - [backend/app/bot/handlers/commands.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/commands.py)
 - [backend/app/bot/handlers/journal.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/journal.py)
-- [backend/app/bot/handlers/photos.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/photos.py)
 - [backend/app/bot/handlers/settings_menu.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/settings_menu.py)
 - [backend/app/bot/handlers/skills.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/skills.py)
 - [backend/app/bot/handlers/webapp_data.py](https://raw.githubusercontent.com/AndreyVoyage/skilltracer/master/backend/app/bot/handlers/webapp_data.py)

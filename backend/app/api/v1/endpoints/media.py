@@ -7,7 +7,7 @@ Media Proxy API
 
 import logging
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from io import BytesIO
 from typing import Optional
 
@@ -147,28 +147,31 @@ async def add_media(
         "created_at": datetime.now().isoformat(),
     }
 
-    entry.media_files.append(media_item)
-    flag_modified(entry, "media_files")
+    current = entry.media_files or []
+    entry.media_files = current + [media_item]
     entry.has_media = True
 
     await db.commit()
     return MediaItemOut(**media_item)
 
 
-@router.delete("/entries/{entry_id}/media/{media_id}")
+@router.delete("/entries/{entry_date}/media/{media_id}")
 async def delete_media(
-    entry_id: int,
+    entry_date: date,
     media_id: str,
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user_or_query),
 ):
     """Удаляет конкретное медиа по ID. Поддерживает legacy поля (photo/video/voice_file_id)."""
     result = await db.execute(
-        select(DailyEntry).where(DailyEntry.id == entry_id)
+        select(DailyEntry).where(
+            DailyEntry.user_id == user.id,
+            DailyEntry.entry_date == entry_date,
+        )
     )
     entry = result.scalar_one_or_none()
 
-    if not entry or entry.user_id != user.id:
+    if not entry:
         raise HTTPException(status_code=404, detail="Entry not found")
 
     # Legacy support: если ID начинается с legacy- — очищаем deprecated поле

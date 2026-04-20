@@ -261,7 +261,10 @@ async def get_week_entries(
             photo_file_id=de.photo_file_id if de else None,
             voice_file_id=de.voice_file_id if de else None,
             video_file_id=de.video_file_id if de else None,
-            has_media=de.has_media if de else False,
+            has_media=bool(
+                (de and de.has_media)
+                or (je and je.media_urls and len(je.media_urls) > 0)
+            ),
             metrics=[{"tracker_id": m.tracker_id, "value": m.value} for m in de.metrics] if de else [],
             media_files=merged_media,
             health_score=je.health_score if je else None,

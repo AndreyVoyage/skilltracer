@@ -110,7 +110,7 @@ export const DayDetail: React.FC = () => {
       {/* Media Gallery */}
       {allMedia.length > 0 && entry && (
         <MediaGallery
-          entryId={entry.id}
+          entryDate={date}
           mediaItems={allMedia}
           onDelete={refetch}
         />

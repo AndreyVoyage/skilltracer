@@ -11,7 +11,7 @@ export interface MediaItem {
 }
 
 interface Props {
-  entryId: number;
+  entryDate: string;
   mediaItems: (MediaItem | string)[];
   onDelete?: () => void;
 }
@@ -36,7 +36,7 @@ function getItemKey(item: MediaItem, idx: number): string {
   return item.id || item.file_id || `idx-${idx}`;
 }
 
-export function MediaGallery({ entryId, mediaItems, onDelete }: Props) {
+export function MediaGallery({ entryDate, mediaItems, onDelete }: Props) {
   const [mediaStates, setMediaStates] = useState<Record<string, MediaState>>({});
 
   const items = mediaItems.map(normalizeMedia).filter(Boolean) as MediaItem[];
@@ -93,13 +93,15 @@ export function MediaGallery({ entryId, mediaItems, onDelete }: Props) {
       if (!confirm('Удалить этот файл?')) return;
 
       try {
-        await api.delete(`/media/entries/${entryId}/media/${mediaId}`);
+        await api.delete(`/media/entries/${entryDate}/media/${mediaId}`);
         onDelete?.();
       } catch (e: any) {
-        alert('Ошибка удаления: ' + (e.response?.data?.detail || e.message));
+        const errorDetail = e?.response?.data?.detail;
+        const errorMsg = typeof errorDetail === 'string' ? errorDetail : (e?.message || 'Неизвестная ошибка');
+        alert('Ошибка удаления: ' + errorMsg);
       }
     },
-    [entryId, onDelete]
+    [entryDate, onDelete]
   );
 
   if (!items.length) return null;

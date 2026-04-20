@@ -9,6 +9,7 @@ Journal Handlers (Моя неделя)
 """
 
 import logging
+import uuid
 from datetime import date, timedelta
 
 from aiogram import Router, F
@@ -221,13 +222,13 @@ async def entry_media_in_scores_state(message: Message, state: FSMContext) -> No
     """Принимает медиа и автоматически возвращает к оценкам."""
     media_item = None
     if message.photo:
-        media_item = {"type": "photo", "file_id": message.photo[-1].file_id}
+        media_item = {"id": str(uuid.uuid4()), "type": "photo", "file_id": message.photo[-1].file_id}
     elif message.voice:
-        media_item = {"type": "voice", "file_id": message.voice.file_id}
+        media_item = {"id": str(uuid.uuid4()), "type": "voice", "file_id": message.voice.file_id}
     elif message.video:
-        media_item = {"type": "video", "file_id": message.video.file_id}
+        media_item = {"id": str(uuid.uuid4()), "type": "video", "file_id": message.video.file_id}
     elif message.audio:
-        media_item = {"type": "audio", "file_id": message.audio.file_id}
+        media_item = {"id": str(uuid.uuid4()), "type": "audio", "file_id": message.audio.file_id}
 
     if not media_item:
         await message.answer("Не удалось распознать медиа.")
@@ -237,6 +238,7 @@ async def entry_media_in_scores_state(message: Message, state: FSMContext) -> No
     media = data.get("media", [])
     media.append(media_item)
     await state.update_data(media=media)
+    logger.info(f"[JOURNAL_MEDIA] Added {media_item['type']} with id={media_item['id']}, total media in state: {len(media)}")
     await _return_to_ratings(message, state, "📎 Медиа сохранено.")
 
 
@@ -265,6 +267,7 @@ async def save_entry_callback(
     user_id = callback.from_user.id
 
     try:
+        logger.info(f"[JOURNAL_SAVE] Saving entry for {entry_date}, media_count={len(media)}, media_ids={[m.get('id') for m in media]}")
         await save_journal_entry(
             db=db,
             user_id=user_id,

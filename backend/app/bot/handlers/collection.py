@@ -12,7 +12,6 @@ from datetime import date, datetime
 from aiogram import Router, F
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from sqlalchemy import select
-from sqlalchemy.orm.attributes import flag_modified
 
 from app.models import DailyEntry
 from app.bot.config import BotButtons
@@ -92,17 +91,16 @@ async def handle_photo(message: Message, db) -> None:
     entry.photo_file_id = file_id
     
     # New unified array
-    if not entry.media_files:
-        entry.media_files = []
-    old_count = len(entry.media_files)
-    entry.media_files.append(_make_media_item("photo", file_id, message.caption))
-    flag_modified(entry, "media_files")
+    current = entry.media_files or []
+    old_count = len(current)
+    entry.media_files = current + [_make_media_item("photo", file_id, message.caption)]
     entry.has_media = True
     
     await db.commit()
+    await db.refresh(entry)
     
     new_count = len(entry.media_files)
-    logger.info(f"[MEDIA_DEBUG] Photo saved: user={user_id}, entry_id={entry.id}, media_before={old_count}, media_after={new_count}")
+    logger.info(f"[MEDIA_DEBUG] Photo saved: user={user_id}, entry_id={entry.id}, media_before={old_count}, media_after={new_count}, last_id={entry.media_files[-1].get('id') if entry.media_files else 'NONE'}")
     
     await message.reply(
         f"📷 Фото добавлено! (всего: {new_count})\n"
@@ -130,17 +128,16 @@ async def handle_video(message: Message, db) -> None:
     entry.video_file_id = file_id
     
     # New unified array
-    if not entry.media_files:
-        entry.media_files = []
-    old_count = len(entry.media_files)
-    entry.media_files.append(_make_media_item("video", file_id, message.caption))
-    flag_modified(entry, "media_files")
+    current = entry.media_files or []
+    old_count = len(current)
+    entry.media_files = current + [_make_media_item("video", file_id, message.caption)]
     entry.has_media = True
     
     await db.commit()
+    await db.refresh(entry)
     
     new_count = len(entry.media_files)
-    logger.info(f"[MEDIA_DEBUG] Video saved: user={user_id}, entry_id={entry.id}, media_before={old_count}, media_after={new_count}")
+    logger.info(f"[MEDIA_DEBUG] Video saved: user={user_id}, entry_id={entry.id}, media_before={old_count}, media_after={new_count}, last_id={entry.media_files[-1].get('id') if entry.media_files else 'NONE'}")
     
     await message.reply(
         f"🎥 Видео добавлено! (всего: {new_count}, длительность: {video.duration} сек)\n"
@@ -164,13 +161,12 @@ async def handle_video_note(message: Message, db) -> None:
     
     entry = await _get_or_create_entry(user_id, today, db)
     
-    if not entry.media_files:
-        entry.media_files = []
-    entry.media_files.append(_make_media_item("video_note", file_id))
-    flag_modified(entry, "media_files")
+    current = entry.media_files or []
+    entry.media_files = current + [_make_media_item("video_note", file_id)]
     entry.has_media = True
     
     await db.commit()
+    await db.refresh(entry)
     
     count = len(entry.media_files)
     await message.reply(
@@ -199,17 +195,16 @@ async def handle_voice(message: Message, db) -> None:
     entry.voice_file_id = file_id
     
     # New unified array
-    if not entry.media_files:
-        entry.media_files = []
-    old_count = len(entry.media_files)
-    entry.media_files.append(_make_media_item("voice", file_id))
-    flag_modified(entry, "media_files")
+    current = entry.media_files or []
+    old_count = len(current)
+    entry.media_files = current + [_make_media_item("voice", file_id)]
     entry.has_media = True
     
     await db.commit()
+    await db.refresh(entry)
     
     new_count = len(entry.media_files)
-    logger.info(f"[MEDIA_DEBUG] Voice saved: user={user_id}, entry_id={entry.id}, media_before={old_count}, media_after={new_count}")
+    logger.info(f"[MEDIA_DEBUG] Voice saved: user={user_id}, entry_id={entry.id}, media_before={old_count}, media_after={new_count}, last_id={entry.media_files[-1].get('id') if entry.media_files else 'NONE'}")
     
     await message.reply(
         f"🎤 Голосовое добавлено! (всего: {new_count})\n"
@@ -233,18 +228,17 @@ async def handle_audio(message: Message, db) -> None:
     entry.voice_file_id = file_id
     
     # New unified array
-    if not entry.media_files:
-        entry.media_files = []
-    old_count = len(entry.media_files)
+    current = entry.media_files or []
+    old_count = len(current)
     title = audio.title or audio.performer or None
-    entry.media_files.append(_make_media_item("audio", file_id, title))
-    flag_modified(entry, "media_files")
+    entry.media_files = current + [_make_media_item("audio", file_id, title)]
     entry.has_media = True
     
     await db.commit()
+    await db.refresh(entry)
     
     new_count = len(entry.media_files)
-    logger.info(f"[MEDIA_DEBUG] Audio saved: user={user_id}, entry_id={entry.id}, media_before={old_count}, media_after={new_count}")
+    logger.info(f"[MEDIA_DEBUG] Audio saved: user={user_id}, entry_id={entry.id}, media_before={old_count}, media_after={new_count}, last_id={entry.media_files[-1].get('id') if entry.media_files else 'NONE'}")
     
     display_title = title or "Без названия"
     await message.reply(
@@ -275,16 +269,15 @@ async def handle_document(message: Message, db) -> None:
     entry = await _get_or_create_entry(user_id, today, db)
     
     if mime_type.startswith("image/"):
-        if not entry.media_files:
-            entry.media_files = []
-        old_count = len(entry.media_files)
-        entry.media_files.append(_make_media_item("photo", file_id, file_name))
-        flag_modified(entry, "media_files")
+        current = entry.media_files or []
+        old_count = len(current)
+        entry.media_files = current + [_make_media_item("photo", file_id, file_name)]
         entry.has_media = True
         await db.commit()
+        await db.refresh(entry)
         
         new_count = len(entry.media_files)
-        logger.info(f"[MEDIA_DEBUG] Document(image) saved: user={user_id}, entry_id={entry.id}, media_before={old_count}, media_after={new_count}")
+        logger.info(f"[MEDIA_DEBUG] Document(image) saved: user={user_id}, entry_id={entry.id}, media_before={old_count}, media_after={new_count}, last_id={entry.media_files[-1].get('id') if entry.media_files else 'NONE'}")
         
         await message.reply(
             f"📸 Изображение <b>{file_name}</b> добавлено! (всего: {new_count})",
