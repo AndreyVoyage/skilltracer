@@ -24,7 +24,7 @@ frontend/dist/
 *.pid
 
 # IDE
-.vscode/
+.vscode/  # Commented out: shared VS Code config for team
 .idea/
 *.swp
 *.swo

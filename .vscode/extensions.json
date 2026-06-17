@@ -1,0 +1,17 @@
+{
+    "recommendations": [
+        "ms-vscode-remote.remote-ssh",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens",
+        "charliermarsh.ruff",
+        "redhat.vscode-yaml",
+        "esbenp.prettier-vscode",
+        "formulahendry.auto-close-tag",
+        "formulahendry.auto-rename-tag",
+        "christian-kohler.path-intellisense"
+    ]
+}

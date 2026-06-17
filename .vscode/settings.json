@@ -1,0 +1,46 @@
+{
+    "remote.SSH.showLoginTerminal": true,
+    "remote.SSH.useLocalServer": false,
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "files.eol": "\n",
+    "editor.formatOnSave": true,
+    "editor.rulers": [100],
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.trimAutoWhitespace": true,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    
+    "python.defaultInterpreterPath": "/opt/skilltracer/backend/.venv/bin/python",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.autoImportCompletions": true,
+    
+    "typescript.tsdk": "frontend/node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    
+    "eslint.workingDirectories": ["frontend"],
+    "eslint.useFlatConfig": true,
+    
+    "tailwindCSS.includeLanguages": {
+        "typescript": "javascript",
+        "typescriptreact": "javascript"
+    },
+    
+    "remote.SSH.defaultForwardedPorts": [
+        {
+            "localPort": 8000,
+            "remotePort": 8000,
+            "name": "Backend API"
+        },
+        {
+            "localPort": 3000,
+            "remotePort": 3000,
+            "name": "Frontend"
+        },
+        {
+            "localPort": 5432,
+            "remotePort": 5432,
+            "name": "PostgreSQL"
+        }
+    ]
+}
