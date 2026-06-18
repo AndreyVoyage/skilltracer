@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import auth
+from app.routers import auth, categories
 
 app = FastAPI(title="SkillTracer API", version="0.1.0")
 
@@ -16,6 +16,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/api/v1")
+app.include_router(categories.router, prefix="/api/v1")
 
 
 @app.get("/")

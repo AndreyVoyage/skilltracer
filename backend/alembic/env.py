@@ -12,6 +12,7 @@ from app.config import settings
 from app.models.base import Base
 
 # Import all models so Alembic can discover them for autogenerate.
+from app.models.category import Category  # noqa: F401
 from app.models.user import User  # noqa: F401
 
 # this is the Alembic Config object, which provides
