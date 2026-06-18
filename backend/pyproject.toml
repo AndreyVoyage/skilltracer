@@ -26,6 +26,14 @@ pytest-cov = "^5.0"
 mypy = "^1.10"
 ruff = "^0.4"
 
+[tool.mypy]
+python_version = "3.11"
+strict = true
+plugins = ["sqlalchemy.ext.mypy.plugin"]
+ignore_missing_imports = true
+warn_unused_ignores = true
+show_error_codes = true
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
