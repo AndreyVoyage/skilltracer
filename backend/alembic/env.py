@@ -13,7 +13,13 @@ from app.models.base import Base
 
 # Import all models so Alembic can discover them for autogenerate.
 from app.models.category import Category  # noqa: F401
+from app.models.entry import Entry  # noqa: F401
+from app.models.media_attachment import MediaAttachment  # noqa: F401
+from app.models.rating import Rating  # noqa: F401
+from app.models.streak import Streak  # noqa: F401
 from app.models.user import User  # noqa: F401
+from app.models.user_settings import UserSettings  # noqa: F401
+from app.models.weekly_report import WeeklyReport  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -11,6 +11,10 @@ from app.models.base import Base
 
 if TYPE_CHECKING:
     from app.models.category import Category
+    from app.models.entry import Entry
+    from app.models.streak import Streak
+    from app.models.user_settings import UserSettings
+    from app.models.weekly_report import WeeklyReport
 
 
 def _utc_now() -> datetime:
@@ -42,6 +46,20 @@ class User(Base):
         String(255),
         nullable=True,
     )
+    language: Mapped[str] = mapped_column(
+        String(10),
+        default="ru",
+        nullable=False,
+    )
+    timezone: Mapped[str] = mapped_column(
+        String(50),
+        default="Europe/Moscow",
+        nullable=False,
+    )
+    avatar_url: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True,
+    )
     created_at: Mapped[datetime] = mapped_column(
         default=_utc_now,
         nullable=False,
@@ -54,6 +72,28 @@ class User(Base):
 
     categories: Mapped[list["Category"]] = relationship(
         "Category",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    entries: Mapped[list["Entry"]] = relationship(
+        "Entry",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    user_settings: Mapped["UserSettings"] = relationship(
+        "UserSettings",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )
+    streak: Mapped["Streak"] = relationship(
+        "Streak",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )
+    weekly_reports: Mapped[list["WeeklyReport"]] = relationship(
+        "WeeklyReport",
         back_populates="user",
         cascade="all, delete-orphan",
     )
