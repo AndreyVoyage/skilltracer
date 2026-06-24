@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     TELEGRAM_BOT_TOKEN: str
+    BOT_API_TOKEN: str = "bot-dev-token-change-in-production"
+    MEDIA_UPLOAD_DIR: str = "media"
 
 
 settings: Settings = Settings()  # type: ignore[call-arg]
