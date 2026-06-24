@@ -13,7 +13,7 @@ The repository is a multi-service Docker application:
 | Service | Path | Technology | State |
 |---|---|---|---|
 | Backend API | `backend/` | FastAPI + SQLAlchemy 2.0 (async) + PostgreSQL 16 | Auth (Telegram OAuth + JWT), User model, Alembic migrations, tests |
-| Telegram Bot | `bot/` | aiogram v3 + httpx | Skeleton — only `app/main.py` and `app/config.py` have code |
+| Telegram Bot | `bot/` | aiogram v3 + httpx | Active — FSM implemented (entry flow: rating → comment → photo → confirm) |
 | Web Dashboard | `frontend/` | React 18 + TypeScript + Vite + Tailwind CSS | Skeleton — only `App.tsx`, `main.tsx`, and `index.css` have code |
 | Reverse Proxy | `nginx/` | Nginx | Configured for `skilltracer.art-artel.su` |
 | Infrastructure | `docker-compose*.yml`, `scripts/` | Docker + Docker Compose + Certbot | Dev/prod compose files + Ubuntu setup scripts |
@@ -44,11 +44,11 @@ skilltracer/
 │   ├── app/
 │   │   ├── main.py          # aiogram entry point (long-polling)
 │   │   ├── config.py        # Pydantic-settings loader
-│   │   ├── handlers/        # EMPTY
-│   │   ├── keyboards/       # EMPTY
-│   │   ├── services/        # EMPTY
-│   │   └── states/          # EMPTY
-│   ├── tests/               # EMPTY
+│   │   ├── handlers/
+│   │   │   └── entry.py     # FSM: rating → comment → photo → confirm
+│   │   └── services/
+│   │       └── backend.py   # BackendClient (httpx)
+│   ├── .env.example
 │   ├── Dockerfile
 │   ├── requirements.txt
 │   └── README.md
@@ -111,11 +111,19 @@ skilltracer/
 
 ### 4.2 Bot (`bot/app/`)
 
+**Status:** Active — FSM implemented
+
 - **Entry point:** `python -m app.main`.
-- `app/main.py` sets up an aiogram `Bot` + `Dispatcher` and registers a single `/start` handler.
-- `app/config.py` loads `TELEGRAM_BOT_TOKEN` and `BACKEND_URL` from `.env` using pydantic-settings.
-- **Planned but empty:** `handlers/`, `keyboards/`, `services/`, `states/`.
-- `httpx` is installed and `BACKEND_URL` is configured, but no backend calls are implemented yet.
+- `app/main.py` — Dispatcher, entry router connected via `dp.include_router(entry.router)`.
+- `app/config.py` — Settings: `TELEGRAM_BOT_TOKEN`, `BACKEND_URL`, `BOT_API_TOKEN`.
+- `app/handlers/entry.py` — FSM: `EntryStates` (rating → comment → photo → confirm), `/entry` and `/cancel` commands.
+- `app/services/backend.py` — `BackendClient` (httpx): `authenticate`, `get_categories`, `create_entry`, `upload_media`.
+
+**Commands:** `/start`, `/entry`, `/cancel`
+
+**Inline buttons:** 🔴1 🟠2 🟡3 🟢4 🟢5 (rating selection)
+
+**Commits:** f7873f5 (FSM + BackendClient), acf0319 (__init__.py packages)
 
 ### 4.3 Frontend (`frontend/src/`)
 
@@ -338,7 +346,7 @@ There is no CI job for the bot yet.
 - `docs/` is empty and `docs/architecture.md` is referenced by `README.md` but does not exist.
 - `ADR/ADR-001.md` is referenced by `TASK.md` and `CONTEXT.json` but does not exist.
 - Backend has a working database connection, `User` model, Alembic migration, and Telegram OAuth/JWT authentication.
-- Bot has no backend integration despite having `httpx` and a `BACKEND_URL` setting.
+- Bot FSM is implemented but not yet tested in a real Telegram environment (Docker volume mount only).
 - Frontend has no routing, state management, API client, or tests despite the corresponding libraries being installed.
 
 When adding features, keep changes minimal, follow the project-specific rules in section 7.2, and update this file if you introduce new conventions, commands, or architecture decisions.
